@@ -1,0 +1,1408 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Dosenova CMS — Content Management System gratis berbasis web untuk membantu dosen mengelola portfolio Tri Dharma secara terstruktur dan profesional.">
+  <meta name="keywords" content="Dosenova, CMS, dosen, portfolio, Tri Dharma, pengajaran, penelitian, pengabdian masyarakat">
+  <meta name="author" content="Adam Puspabhuana">
+  <title>Dosenova CMS — Portfolio Tri Dharma untuk Dosen</title>
+  <link rel="icon" href="logo/icon.ico" type="image/x-icon">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    /* ========================================
+       CSS RESET & BASE
+    ======================================== */
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #1e3a5f;
+      --primary-light: #2a5298;
+      --primary-dark: #0f2440;
+      --accent: #4a90d9;
+      --accent-light: #6bb3ff;
+      --accent-glow: rgba(74, 144, 217, 0.3);
+      --bg-light: #f4f7fb;
+      --bg-white: #ffffff;
+      --bg-dark: #0b1929;
+      --text-primary: #1a2332;
+      --text-secondary: #5a6a7e;
+      --text-light: #8a98a8;
+      --text-white: #ffffff;
+      --border: #e0e7f1;
+      --border-light: #edf2f8;
+      --shadow-sm: 0 2px 8px rgba(30, 58, 95, 0.06);
+      --shadow-md: 0 8px 30px rgba(30, 58, 95, 0.1);
+      --shadow-lg: 0 20px 60px rgba(30, 58, 95, 0.15);
+      --shadow-xl: 0 30px 80px rgba(30, 58, 95, 0.2);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 20px;
+      --radius-xl: 28px;
+      --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 80px;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--text-primary);
+      background: var(--bg-white);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+
+    /* ========================================
+       NAVIGATION
+    ======================================== */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-light);
+      transition: var(--transition);
+    }
+
+    .navbar.scrolled {
+      background: rgba(255, 255, 255, 0.95);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 72px;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--primary);
+    }
+
+    .nav-brand img {
+      height: 40px;
+      width: auto;
+    }
+
+    .nav-brand span {
+      font-size: 1.3rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      font-weight: 500;
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--primary);
+      background: rgba(74, 144, 217, 0.08);
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: 2px;
+      left: 50%;
+      transform: translateX(-50%) scaleX(0);
+      width: 20px;
+      height: 2px;
+      background: var(--accent);
+      border-radius: 1px;
+      transition: var(--transition);
+    }
+
+    .nav-links a:hover::after,
+    .nav-links a.active::after {
+      transform: translateX(-50%) scaleX(1);
+    }
+
+    /* Hamburger */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 8px;
+      border: none;
+      background: none;
+      z-index: 1001;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: var(--primary);
+      border-radius: 2px;
+      transition: var(--transition);
+    }
+
+    .hamburger.active span:nth-child(1) {
+      transform: rotate(45deg) translate(5px, 5px);
+    }
+
+    .hamburger.active span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .hamburger.active span:nth-child(3) {
+      transform: rotate(-45deg) translate(5px, -5px);
+    }
+
+    /* ========================================
+       HERO SECTION
+    ======================================== */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(160deg, #f0f5ff 0%, #e8f0fe 30%, var(--bg-white) 70%);
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -40%;
+      right: -20%;
+      width: 800px;
+      height: 800px;
+      background: radial-gradient(circle, rgba(74, 144, 217, 0.08) 0%, transparent 70%);
+      border-radius: 50%;
+      animation: float 8s ease-in-out infinite;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -30%;
+      left: -15%;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(30, 58, 95, 0.05) 0%, transparent 70%);
+      border-radius: 50%;
+      animation: float 10s ease-in-out infinite reverse;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-30px) scale(1.05); }
+    }
+
+    .hero-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 120px 24px 80px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-content {
+      animation: slideInLeft 0.8s ease-out;
+    }
+
+    @keyframes slideInLeft {
+      from { opacity: 0; transform: translateX(-40px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(74, 144, 217, 0.1);
+      color: var(--accent);
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 6px 16px;
+      border-radius: 50px;
+      margin-bottom: 24px;
+      letter-spacing: 0.03em;
+    }
+
+    .hero-badge::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .hero h1 {
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      color: var(--primary-dark);
+      margin-bottom: 20px;
+    }
+
+    .hero h1 .highlight {
+      background: linear-gradient(135deg, var(--accent), var(--accent-light));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-subtitle {
+      font-size: 1.15rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin-bottom: 36px;
+      max-width: 500px;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 32px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 600;
+      border: none;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      text-decoration: none;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      color: var(--text-white);
+      box-shadow: 0 4px 20px rgba(30, 58, 95, 0.3);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(30, 58, 95, 0.4);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    .btn-secondary {
+      background: var(--bg-white);
+      color: var(--primary);
+      border: 2px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--accent);
+      background: rgba(74, 144, 217, 0.05);
+      transform: translateY(-2px);
+    }
+
+    .hero-image {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: slideInRight 0.8s ease-out 0.2s both;
+    }
+
+    @keyframes slideInRight {
+      from { opacity: 0; transform: translateX(40px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .hero-logo-wrapper {
+      position: relative;
+      width: 340px;
+      height: 340px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hero-logo-wrapper::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(74, 144, 217, 0.15), rgba(30, 58, 95, 0.08));
+      animation: rotate-glow 12s linear infinite;
+    }
+
+    .hero-logo-wrapper::after {
+      content: '';
+      position: absolute;
+      inset: 20px;
+      border-radius: 50%;
+      background: var(--bg-white);
+      box-shadow: var(--shadow-lg);
+    }
+
+    @keyframes rotate-glow {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .hero-logo-wrapper img {
+      position: relative;
+      z-index: 1;
+      width: 180px;
+      height: auto;
+      filter: drop-shadow(0 10px 30px rgba(30, 58, 95, 0.15));
+    }
+
+    /* ========================================
+       SECTIONS COMMON
+    ======================================== */
+    section {
+      padding: 100px 24px;
+    }
+
+    .section-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 64px;
+    }
+
+    .section-label {
+      display: inline-block;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      color: var(--primary-dark);
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+
+    .section-desc {
+      font-size: 1.05rem;
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    /* ========================================
+       ABOUT SECTION
+    ======================================== */
+    .about {
+      background: var(--bg-light);
+      position: relative;
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+
+    .about-image {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .about-logo-card {
+      width: 300px;
+      height: 300px;
+      background: var(--bg-white);
+      border-radius: var(--radius-xl);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow-lg);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .about-logo-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-light));
+    }
+
+    .about-logo-card img {
+      width: 160px;
+      height: auto;
+    }
+
+    .about-content h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+      margin-bottom: 16px;
+    }
+
+    .about-content p {
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+      font-size: 0.95rem;
+      line-height: 1.8;
+    }
+
+    .about-highlights {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .about-highlight {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 16px;
+      background: var(--bg-white);
+      border-radius: var(--radius-sm);
+      border-left: 3px solid var(--accent);
+      transition: var(--transition);
+    }
+
+    .about-highlight:hover {
+      transform: translateX(4px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .about-highlight .icon {
+      flex-shrink: 0;
+      width: 24px;
+      height: 24px;
+      background: rgba(74, 144, 217, 0.1);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+    }
+
+    .about-highlight p {
+      margin: 0;
+      font-size: 0.88rem;
+      line-height: 1.5;
+    }
+
+    /* ========================================
+       FITUR SECTION
+    ======================================== */
+    .features {
+      background: var(--bg-white);
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+      margin-bottom: 40px;
+    }
+
+    .feature-card {
+      background: var(--bg-white);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      padding: 36px 28px;
+      text-align: center;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-light));
+      transform: scaleX(0);
+      transition: var(--transition);
+    }
+
+    .feature-card:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--shadow-lg);
+      border-color: transparent;
+    }
+
+    .feature-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .feature-icon {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 20px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      transition: var(--transition);
+    }
+
+    .feature-card:nth-child(1) .feature-icon {
+      background: rgba(74, 144, 217, 0.1);
+      color: var(--accent);
+    }
+
+    .feature-card:nth-child(2) .feature-icon {
+      background: rgba(52, 168, 83, 0.1);
+      color: #34a853;
+    }
+
+    .feature-card:nth-child(3) .feature-icon {
+      background: rgba(251, 188, 4, 0.1);
+      color: #e6a800;
+    }
+
+    .feature-card:nth-child(4) .feature-icon {
+      background: rgba(234, 67, 53, 0.1);
+      color: #ea4335;
+    }
+
+    .feature-card:hover .feature-icon {
+      transform: scale(1.1);
+    }
+
+    .feature-card h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+      margin-bottom: 10px;
+    }
+
+    .feature-card p {
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .features-note {
+      text-align: center;
+      padding: 28px 32px;
+      background: linear-gradient(135deg, rgba(74, 144, 217, 0.06), rgba(30, 58, 95, 0.04));
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-light);
+    }
+
+    .features-note p {
+      color: var(--text-secondary);
+      font-size: 0.92rem;
+    }
+
+    .features-note strong {
+      color: var(--primary);
+    }
+
+    /* ========================================
+       DOWNLOAD SECTION
+    ======================================== */
+    .download {
+      background: var(--bg-light);
+      position: relative;
+    }
+
+    .download-card {
+      max-width: 700px;
+      margin: 0 auto;
+      background: var(--bg-white);
+      border-radius: var(--radius-xl);
+      padding: 56px 48px;
+      text-align: center;
+      box-shadow: var(--shadow-lg);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .download-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--accent), var(--accent-light));
+    }
+
+    .download-icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 24px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      color: var(--text-white);
+      box-shadow: 0 8px 24px rgba(30, 58, 95, 0.3);
+    }
+
+    .download-card h3 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+      margin-bottom: 12px;
+    }
+
+    .download-card p {
+      color: var(--text-secondary);
+      margin-bottom: 32px;
+      font-size: 0.95rem;
+      line-height: 1.7;
+    }
+
+    .download-info {
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+    }
+
+    .download-info-item {
+      text-align: center;
+    }
+
+    .download-info-item .label {
+      font-size: 0.75rem;
+      color: var(--text-light);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 4px;
+    }
+
+    .download-info-item .value {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+    }
+
+    .btn-download {
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      color: var(--text-white);
+      padding: 16px 48px;
+      font-size: 1rem;
+      font-weight: 700;
+      border: none;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      transition: var(--transition);
+      box-shadow: 0 4px 20px rgba(30, 58, 95, 0.3);
+      font-family: inherit;
+    }
+
+    .btn-download:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 30px rgba(30, 58, 95, 0.4);
+    }
+
+    /* ========================================
+       HOW TO SECTION
+    ======================================== */
+    .howto {
+      background: var(--bg-white);
+    }
+
+    .howto-content {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .howto-video-wrapper {
+      position: relative;
+      width: 100%;
+      padding-bottom: 56.25%;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-xl);
+      margin-bottom: 32px;
+      background: var(--bg-dark);
+    }
+
+    .howto-video-wrapper iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .howto-steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .howto-step {
+      text-align: center;
+      padding: 28px 20px;
+      background: var(--bg-light);
+      border-radius: var(--radius-md);
+      transition: var(--transition);
+    }
+
+    .howto-step:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .step-number {
+      width: 44px;
+      height: 44px;
+      margin: 0 auto 14px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      color: var(--text-white);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1.1rem;
+    }
+
+    .howto-step h4 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+      margin-bottom: 8px;
+    }
+
+    .howto-step p {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* ========================================
+       FOOTER
+    ======================================== */
+    .footer {
+      background: var(--bg-dark);
+      color: var(--text-white);
+      padding: 48px 24px 28px;
+    }
+
+    .footer-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .footer-brand img {
+      height: 36px;
+      width: auto;
+      filter: brightness(1.2);
+    }
+
+    .footer-brand span {
+      font-size: 1.2rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 24px;
+      list-style: none;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .footer-links a {
+      color: rgba(255, 255, 255, 0.6);
+      text-decoration: none;
+      font-size: 0.88rem;
+      transition: var(--transition);
+    }
+
+    .footer-links a:hover {
+      color: var(--accent-light);
+    }
+
+    .footer-divider {
+      width: 100%;
+      max-width: 400px;
+      height: 1px;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .footer-bottom {
+      text-align: center;
+      font-size: 0.82rem;
+      color: rgba(255, 255, 255, 0.4);
+    }
+
+    .footer-bottom a {
+      color: rgba(255, 255, 255, 0.6);
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    .footer-bottom a:hover {
+      color: var(--accent-light);
+    }
+
+    /* ========================================
+       SCROLL ANIMATIONS
+    ======================================== */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ========================================
+       RESPONSIVE
+    ======================================== */
+    @media (max-width: 1024px) {
+      .features-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .nav-links {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 280px;
+        height: 100vh;
+        background: var(--bg-white);
+        flex-direction: column;
+        padding: 100px 32px 32px;
+        gap: 8px;
+        box-shadow: var(--shadow-xl);
+        transition: var(--transition-slow);
+        align-items: flex-start;
+      }
+
+      .nav-links.open {
+        right: 0;
+      }
+
+      .nav-links a {
+        width: 100%;
+        padding: 12px 16px;
+        font-size: 1rem;
+      }
+
+      .hamburger {
+        display: flex;
+      }
+
+      .hero-container {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 40px;
+        padding-top: 100px;
+      }
+
+      .hero-subtitle {
+        margin: 0 auto 36px;
+      }
+
+      .hero-actions {
+        justify-content: center;
+      }
+
+      .hero-image {
+        order: -1;
+      }
+
+      .hero-logo-wrapper {
+        width: 240px;
+        height: 240px;
+      }
+
+      .hero-logo-wrapper img {
+        width: 120px;
+      }
+
+      .about-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+
+      .about-image {
+        order: -1;
+      }
+
+      .about-logo-card {
+        width: 220px;
+        height: 220px;
+      }
+
+      .about-logo-card img {
+        width: 110px;
+      }
+
+      .features-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      .howto-steps {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      .download-card {
+        padding: 40px 28px;
+      }
+
+      .download-info {
+        gap: 20px;
+      }
+
+      section {
+        padding: 72px 20px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .hero h1 {
+        font-size: 2rem;
+      }
+
+      .btn {
+        padding: 12px 24px;
+        font-size: 0.9rem;
+      }
+
+      .hero-actions {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .download-card {
+        padding: 32px 20px;
+      }
+    }
+
+    /* Mobile Overlay */
+    .nav-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 999;
+      opacity: 0;
+      transition: var(--transition);
+    }
+
+    .nav-overlay.show {
+      display: block;
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== NAVIGATION ===== -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="#home" class="nav-brand">
+        <img src="logo/logo.png" alt="Dosenova Logo">
+        <span>Dosenova</span>
+      </a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#home" class="active">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#fitur">Fitur</a></li>
+        <li><a href="#download">Download</a></li>
+        <li><a href="#howto">How To</a></li>
+      </ul>
+      <button class="hamburger" id="hamburger" aria-label="Toggle navigation">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </nav>
+  <div class="nav-overlay" id="navOverlay"></div>
+
+  <!-- ===== HOME / HERO ===== -->
+  <section class="hero" id="home">
+    <div class="hero-container">
+      <div class="hero-content">
+        <div class="hero-badge">Versi 1.0 — Gratis</div>
+        <h1>
+          <span class="highlight">Dosenova</span> CMS
+        </h1>
+        <p class="hero-subtitle">
+          Content Management System berbasis web untuk membantu dosen mengelola portfolio Tri Dharma secara terstruktur, mudah, dan profesional.
+        </p>
+        <div class="hero-actions">
+          <a href="#download" class="btn btn-primary">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Download Sekarang
+          </a>
+          <a href="#fitur" class="btn btn-secondary">Lihat Fitur</a>
+        </div>
+      </div>
+      <div class="hero-image">
+        <div class="hero-logo-wrapper">
+          <img src="logo/logo.png" alt="Dosenova Logo">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ABOUT ===== -->
+  <section class="about" id="about">
+    <div class="section-container">
+      <div class="section-header reveal">
+        <span class="section-label">Tentang Kami</span>
+        <h2 class="section-title">Tentang Dosenova</h2>
+        <p class="section-desc">
+          Mengenal lebih dekat CMS yang dirancang khusus untuk membantu dosen dalam menyusun portfolio profesional.
+        </p>
+      </div>
+      <div class="about-grid">
+        <div class="about-image reveal">
+          <div class="about-logo-card">
+            <img src="logo/logo.png" alt="Dosenova Logo">
+          </div>
+        </div>
+        <div class="about-content reveal">
+          <h3>Apa itu Dosenova?</h3>
+          <p>
+            <strong>Dosenova</strong> adalah CMS (Content Management System) berbasis web yang dibuat oleh 
+            <strong>Adam Puspabhuana</strong>. CMS ini diberikan secara <strong>GRATIS</strong> untuk seluruh 
+            dosen yang membutuhkan platform untuk mengelola portfolio akademik mereka.
+          </p>
+          <p>
+            Tujuan utama Dosenova adalah membantu dosen dalam menyusun dan merangkum portofolio secara 
+            terstruktur, khususnya yang berkaitan dengan Tri Dharma Perguruan Tinggi.
+          </p>
+          <div class="about-highlights">
+            <div class="about-highlight">
+              <div class="icon">💡</div>
+              <p>Latar belakang: belum adanya CMS yang dirancang khusus untuk profesi dosen</p>
+            </div>
+            <div class="about-highlight">
+              <div class="icon">🎁</div>
+              <p>Diberikan GRATIS tanpa biaya apapun untuk seluruh dosen</p>
+            </div>
+            <div class="about-highlight">
+              <div class="icon">🚀</div>
+              <p>Versi 1.0 — akan terus dikembangkan dengan fitur-fitur baru di masa depan</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FITUR ===== -->
+  <section class="features" id="fitur">
+    <div class="section-container">
+      <div class="section-header reveal">
+        <span class="section-label">Fitur Unggulan</span>
+        <h2 class="section-title">Fitur Dosenova</h2>
+        <p class="section-desc">
+          Kelola seluruh portfolio Tri Dharma Perguruan Tinggi dalam satu platform yang lengkap dan mudah digunakan.
+        </p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card reveal">
+          <div class="feature-icon">📚</div>
+          <h3>Pengajaran</h3>
+          <p>Dokumentasikan seluruh aktivitas pengajaran, mata kuliah, dan metode pembelajaran yang telah dilakukan.</p>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon">🔬</div>
+          <h3>Penelitian</h3>
+          <p>Catat dan kelola riset, jurnal, publikasi ilmiah, serta kolaborasi penelitian secara terorganisir.</p>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon">🤝</div>
+          <h3>Pengabdian Masyarakat</h3>
+          <p>Rekam kegiatan pengabdian kepada masyarakat, program pemberdayaan, dan kontribusi sosial lainnya.</p>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon">📦</div>
+          <h3>Produk</h3>
+          <p>Tampilkan produk-produk akademik seperti buku, modul, aplikasi, dan karya inovatif lainnya.</p>
+        </div>
+      </div>
+      <div class="features-note reveal">
+        <p>
+          ✨ <strong>Kustomisasi penuh!</strong> — Tampilan frontend dapat disesuaikan melalui backend, 
+          termasuk pemilihan template dan konfigurasi warna sesuai preferensi Anda.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== DOWNLOAD ===== -->
+  <section class="download" id="download">
+    <div class="section-container">
+      <div class="section-header reveal">
+        <span class="section-label">Unduh Gratis</span>
+        <h2 class="section-title">Download</h2>
+        <p class="section-desc">
+          Dapatkan Dosenova CMS sekarang dan mulai kelola portfolio akademik Anda secara profesional.
+        </p>
+      </div>
+      <div class="download-card reveal">
+        <div class="download-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </div>
+        <h3>Dosenova CMS v1.0</h3>
+        <p>
+          Paket instalasi lengkap dalam format ZIP. Ekstrak, konfigurasi, dan langsung gunakan di server web Anda. 
+          Cocok untuk Nginx, Apache, atau hosting statis.
+        </p>
+        <div class="download-info">
+          <div class="download-info-item">
+            <div class="label">Format</div>
+            <div class="value">.ZIP</div>
+          </div>
+          <div class="download-info-item">
+            <div class="label">Versi</div>
+            <div class="value">1.0</div>
+          </div>
+          <div class="download-info-item">
+            <div class="label">Lisensi</div>
+            <div class="value">Gratis</div>
+          </div>
+        </div>
+        <a href="https://example.com/dosenova.zip" class="btn-download" id="btnDownload">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download Sekarang
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== HOW TO ===== -->
+  <section class="howto" id="howto">
+    <div class="section-container">
+      <div class="section-header reveal">
+        <span class="section-label">Panduan</span>
+        <h2 class="section-title">Cara Install</h2>
+        <p class="section-desc">
+          Ikuti langkah-langkah sederhana berikut untuk menginstall Dosenova CMS di server Anda.
+        </p>
+      </div>
+      <div class="howto-content">
+        <div class="howto-video-wrapper reveal">
+          <iframe 
+            src="https://www.youtube.com/embed/dQw4w9WgXcQ" 
+            title="Tutorial Install Dosenova CMS" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+            allowfullscreen>
+          </iframe>
+        </div>
+        <div class="howto-steps reveal">
+          <div class="howto-step">
+            <div class="step-number">1</div>
+            <h4>Download</h4>
+            <p>Unduh file ZIP Dosenova dari halaman download di atas.</p>
+          </div>
+          <div class="howto-step">
+            <div class="step-number">2</div>
+            <h4>Ekstrak & Konfigurasi</h4>
+            <p>Ekstrak file lalu sesuaikan konfigurasi database dan server Anda.</p>
+          </div>
+          <div class="howto-step">
+            <div class="step-number">3</div>
+            <h4>Jalankan</h4>
+            <p>Upload ke hosting atau jalankan di server lokal, dan mulai gunakan!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <img src="logo/logo.png" alt="Dosenova Logo">
+        <span>Dosenova</span>
+      </div>
+      <ul class="footer-links">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#fitur">Fitur</a></li>
+        <li><a href="#download">Download</a></li>
+        <li><a href="#howto">How To</a></li>
+      </ul>
+      <div class="footer-divider"></div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Dosenova. Dibuat oleh <a href="#">Adam Puspabhuana</a>. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===== JAVASCRIPT ===== -->
+  <script>
+    // ---- Mobile Navigation ----
+    const hamburger = document.getElementById('hamburger');
+    const navLinks = document.getElementById('navLinks');
+    const navOverlay = document.getElementById('navOverlay');
+
+    function toggleMenu() {
+      hamburger.classList.toggle('active');
+      navLinks.classList.toggle('open');
+      navOverlay.classList.toggle('show');
+      document.body.style.overflow = navLinks.classList.contains('open') ? 'hidden' : '';
+    }
+
+    hamburger.addEventListener('click', toggleMenu);
+    navOverlay.addEventListener('click', toggleMenu);
+
+    // Close mobile menu when clicking a link
+    document.querySelectorAll('.nav-links a').forEach(function(link) {
+      link.addEventListener('click', function() {
+        if (navLinks.classList.contains('open')) {
+          toggleMenu();
+        }
+      });
+    });
+
+    // ---- Sticky Navbar Scroll Effect ----
+    var navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', function() {
+      if (window.scrollY > 50) {
+        navbar.classList.add('scrolled');
+      } else {
+        navbar.classList.remove('scrolled');
+      }
+    });
+
+    // ---- Active Nav Link on Scroll ----
+    var sections = document.querySelectorAll('section[id]');
+    var navItems = document.querySelectorAll('.nav-links a');
+
+    function setActiveLink() {
+      var scrollY = window.scrollY + 100;
+      sections.forEach(function(section) {
+        var sectionTop = section.offsetTop;
+        var sectionHeight = section.offsetHeight;
+        var sectionId = section.getAttribute('id');
+        if (scrollY >= sectionTop && scrollY < sectionTop + sectionHeight) {
+          navItems.forEach(function(item) {
+            item.classList.remove('active');
+            if (item.getAttribute('href') === '#' + sectionId) {
+              item.classList.add('active');
+            }
+          });
+        }
+      });
+    }
+
+    window.addEventListener('scroll', setActiveLink);
+
+    // ---- Scroll Reveal Animation ----
+    var revealElements = document.querySelectorAll('.reveal');
+
+    function revealOnScroll() {
+      revealElements.forEach(function(el) {
+        var rect = el.getBoundingClientRect();
+        var windowHeight = window.innerHeight;
+        if (rect.top < windowHeight - 80) {
+          el.classList.add('visible');
+        }
+      });
+    }
+
+    window.addEventListener('scroll', revealOnScroll);
+    window.addEventListener('load', revealOnScroll);
+  </script>
+
+</body>
+</html>

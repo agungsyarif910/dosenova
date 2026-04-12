@@ -1255,7 +1255,7 @@
       <ul class="nav-links" id="navLinks">
         <li><a href="#home" class="active">Home</a></li>
         <li><a href="#about">About</a></li>
-        <li><a href="#fitur">Fitur</a></li>
+        <li><a href="#fitur">Features</a></li>
         <li><a href="#download">Download</a></li>
         <li><a href="#howto">How To</a></li>
       </ul>
@@ -1454,10 +1454,10 @@
             <div class="value">Gratis</div>
           </div>
         </div>
-        <a href="https://example.com/dosenova.zip" class="btn-download" id="btnDownload" onclick="trackDownload()">
+        <button class="btn-download" id="btnDownload" onclick="trackDownload()">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          Download Sekarang
-        </a>
+          <span id="btnDownloadText">Download Sekarang</span>
+        </button>
       </div>
     </div>
   </section>
@@ -1512,7 +1512,7 @@
       <ul class="footer-links">
         <li><a href="#home">Home</a></li>
         <li><a href="#about">About</a></li>
-        <li><a href="#fitur">Fitur</a></li>
+        <li><a href="#fitur">Features</a></li>
         <li><a href="#download">Download</a></li>
         <li><a href="#howto">How To</a></li>
       </ul>
@@ -1731,15 +1731,55 @@
     window.addEventListener('scroll', checkStatsVisible);
     window.addEventListener('load', checkStatsVisible);
 
-    // Track download click
+    // Track download click & generate signed URL
+    var isDownloading = false;
     function trackDownload() {
-      incrementCount('downloads')
-        .then(function(newCount) {
-          downloadsValue = newCount;
-          downloadCountEl.textContent = downloadsValue.toLocaleString('id-ID');
+      if (isDownloading) return;
+      isDownloading = true;
+
+      var btnText = document.getElementById('btnDownloadText');
+      var originalText = btnText.textContent;
+      btnText.textContent = 'Menyiapkan file...';
+
+      // Generate signed URL (expires in 60 seconds)
+      var fileName = cfg.downloadFile || 'dosenova-v1.0.zip';
+      sb.storage
+        .from('dosenova-files')
+        .createSignedUrl(fileName, 60)
+        .then(function(res) {
+          if (res.error) throw res.error;
+
+          // Open signed URL to start download
+          window.open(res.data.signedUrl, '_blank');
+          btnText.textContent = 'Download Dimulai!';
+
+          // Increment download counter (1x per session)
+          if (!sessionStorage.getItem('dosenova_downloaded')) {
+            sessionStorage.setItem('dosenova_downloaded', 'true');
+            incrementCount('downloads')
+              .then(function(newCount) {
+                downloadsValue = newCount;
+                downloadCountEl.textContent = downloadsValue.toLocaleString('id-ID');
+              })
+              .catch(function(err) {
+                console.error('Supabase downloads increment error:', err);
+                sessionStorage.removeItem('dosenova_downloaded');
+              });
+          }
+
+          // Reset button after 3 seconds
+          setTimeout(function() {
+            btnText.textContent = originalText;
+            isDownloading = false;
+          }, 3000);
         })
         .catch(function(err) {
-          console.error('Supabase downloads increment error:', err);
+          console.error('Signed URL error:', err);
+          btnText.textContent = 'Gagal, coba lagi';
+          isDownloading = false;
+          setTimeout(function() {
+            btnText.textContent = originalText;
+          }, 3000);
         });
     }
   </script>

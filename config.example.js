@@ -3,5 +3,6 @@
 // config.js is gitignored and will NOT be committed to the repository.
 window.DOSENOVA_CONFIG = {
   supabaseUrl: 'YOUR_SUPABASE_URL',
-  supabaseKey: 'YOUR_SUPABASE_ANON_KEY'
+  supabaseKey: 'YOUR_SUPABASE_ANON_KEY',
+  downloadFile: 'dosenova-v1.0.zip'  // nama file di bucket "dosenova-files"
 };

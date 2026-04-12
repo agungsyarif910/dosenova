@@ -3,5 +3,8 @@
 // See config.example.js for the template.
 window.DOSENOVA_CONFIG = {
   supabaseUrl: 'https://kowtrlgozgopoysxikhu.supabase.co',
-  supabaseKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtvd3RybGdvemdvcG95c3hpa2h1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxMjIwMjIsImV4cCI6MjA5MDY5ODAyMn0.ShJ4raxTA_Z20KcLXJFZ2lrhxyepWZcvn45NrAXJHlk'
+  supabaseKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtvd3RybGdvemdvcG95c3hpa2h1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxMjIwMjIsImV4cCI6MjA5MDY5ODAyMn0.ShJ4raxTA_Z20KcLXJFZ2lrhxyepWZcvn45NrAXJHlk',
+  // Nama file di Supabase Storage bucket "dosenova-files"
+  downloadFile: 'dosenova_cms_v_1_0.zip'
 };
+
